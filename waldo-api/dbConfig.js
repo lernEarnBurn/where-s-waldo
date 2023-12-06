@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 
-const levelsDb = new sqlite3.Database('./db/levels.db', (err) => {
+const levelsDb = new sqlite3.Database('./db/levels.sqlite', (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -8,7 +8,7 @@ const levelsDb = new sqlite3.Database('./db/levels.db', (err) => {
 });
 
 
-const playersDb = new sqlite3.Database('./db/players.db', (err) => {
+const playersDb = new sqlite3.Database('./db/players.sqlite', (err) => {
   if (err) {
     console.error(err.message);
   }

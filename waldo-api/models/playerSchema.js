@@ -1,5 +1,4 @@
-export const isPlayer = (player) => {
-  
+const isPlayer = (player) => {
   return (
     player &&
     typeof player.name === 'string' &&
@@ -11,3 +10,5 @@ export const isPlayer = (player) => {
     ))
   );
 };
+
+module.exports = isPlayer
