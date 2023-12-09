@@ -1,9 +1,12 @@
+import {v4 as uuidv4} from 'uuid';
+
 const isPlayer = require('../models/playerSchema')
 const playerDb = require('../dbConfig.js').playersDb
 
 
 exports.createPlayer = (req, res, next) => {
   const player = {
+    id: uuidv4(),
     name: req.body.name,
     runs: [] 
   };
