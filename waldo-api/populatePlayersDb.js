@@ -4,6 +4,7 @@ const isPlayer = require('./models/playerSchema')
 // Create 'players' table
 db.run(`
   CREATE TABLE IF NOT EXISTS players (
+    id TEXT,
     name TEXT,
     runs TEXT
   )
@@ -11,13 +12,13 @@ db.run(`
 
 // Insert sample data
 const samplePlayers = [
-  { name: 'Player1', runs: [{ level: 'Level1', totalSeconds: 30 }, { level: 'Level2', totalSeconds: 45 }] },
-  { name: 'Player2', runs: [{ level: 'Level1', totalSeconds: 25 }, { level: 'Level3', totalSeconds: 50 }] }
+  { id: '2134', name: 'Player1', runs: [{ level: 'Level1', totalSeconds: 30 }, { level: 'Level2', totalSeconds: 45 }] },
+  { id: '325325', name: 'Player2', runs: [{ level: 'Level1', totalSeconds: 25 }, { level: 'Level3', totalSeconds: 50 }] }
 ];
 
-const insertPlayer = db.prepare('INSERT INTO players (name, runs) VALUES (?, ?)');
+const insertPlayer = db.prepare('INSERT INTO players (id, name, runs) VALUES (?, ?, ?)'); // <-- Update here
 samplePlayers.forEach(player => {
-  insertPlayer.run(player.name, JSON.stringify(player.runs));
+  insertPlayer.run(player.id, player.name, JSON.stringify(player.runs));
 });
 insertPlayer.finalize();
 
@@ -28,8 +29,8 @@ db.each('SELECT * FROM players', (err, row) => {
     return;
   }
 
-  const player = { name: row.name, runs: JSON.parse(row.runs) };
-  
+  const player = { id: row.id, name: row.name, runs: JSON.parse(row.runs) };
+
   if (isPlayer(player)) {
     console.log('Valid Player:', player);
   } else {
