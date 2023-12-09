@@ -14,18 +14,20 @@ exports.createPlayer = (req, res, next) => {
   if(isPlayer(player)){
     try {
       playerDb.serialize(() => {
-        const insertPlayer = playerDb.prepare('INSERT INTO players (id, name, runs) VALUES (?, ?)');
+        const insertPlayer = playerDb.prepare('INSERT INTO players (id, name, runs) VALUES (?, ?, ?)');
         insertPlayer.run(player.name, JSON.stringify(player.runs));
         insertPlayer.finalize()
       })
       
       playerDb.close((err) => {
         if (err) {
-          return console.error(err.message);
+          console.error(err.message);
+          return res.status(500).json({ error: 'Internal Server Error' });
         }
       });
     } catch(err){
-      console.log(err)
+      console.error(err.message);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
     res.json(`created player: ${JSON.stringify(player)}`)
 
@@ -34,57 +36,47 @@ exports.createPlayer = (req, res, next) => {
   }  
 }
 
-
 exports.addRun = (req, res, next) => {
-      try {
-        const playerDb = new sqlite3.Database('your_database.db');
-      
-        playerDb.serialize(() => {
-           
-        
-           
-            // New value to append to the 'runs' property
-            const newValue = 'new_value_to_append';
-        
-            // Query to select the existing 'runs' value and append the new value
-            const selectQuery = `SELECT runs FROM players (id, name, run) WHERE id = ?`;
-            const updateQuery = `UPDATE players (id, name, run) SET runs = ? WHERE id = ?`;
-        
-            playerDb.get(selectQuery, [idToFind], (err, row) => {
-                if (err) {
-                    console.error(err.message);
-                    return playerDb.close();
-                }
-              
-                // Check if a row was found
-                if (row) {
-                    // Extract the current 'runs' array
-                    const currentRunsArray = JSON.parse(row.runs || '[]');
-                
-                    // Append the new value
-                    currentRunsArray.push(newValue);
-                
-                    // Convert the updated 'runs' array back to a JSON string
-                    const updatedRunsValue = JSON.stringify(currentRunsArray);
-                
-                    // Execute the update query with the updated 'runs' value
-                    playerDb.run(updateQuery, [updatedRunsValue, idToFind], (updateErr) => {
-                        if (updateErr) {
-                            console.error(updateErr.message);
-                        } else {
-                            console.log('Row updated successfully.');
-                        }
-                      
-                        // Close the database connection
-                        playerDb.close();
-                    });
-                } else {
-                    console.log('No matching row found.');
-                    playerDb.close();
-                }
-            });
-        });
-    } catch (err) {
-        console.log(err);
-    }
-}
+  try {
+      playerDb.serialize(() => {
+          const run = {
+              level: req.body.level,
+              totalSeconds: Number(req.body.totalSeconds)
+          }
+
+          const selectQuery = `SELECT runs FROM players WHERE id = ?`;
+          const updateQuery = `UPDATE players SET runs = ? WHERE id = ?`;
+
+          playerDb.get(selectQuery, [req.params.id], (err, row) => {
+              if (err) {
+                  console.error(err.message);
+                  return res.status(500).json({ error: 'Internal Server Error' });
+              }
+
+              if (row) {
+                  const currentRunsArray = JSON.parse(row.runs || '[]');
+                  currentRunsArray.push(run);
+                  const updatedRunsValue = JSON.stringify(currentRunsArray);
+
+                  playerDb.run(updateQuery, [updatedRunsValue, req.params.id], (updateErr) => {
+                      if (updateErr) {
+                          console.error(updateErr.message);
+                          return res.status(500).json({ error: 'Internal Server Error' });
+                      } else {
+                          console.log('Row updated successfully.');
+                          playerDb.close();
+                          return res.status(200).json({ message: 'Run added successfully' });
+                      }
+                  });
+              } else {
+                  console.log('No matching row found.');
+                  playerDb.close();
+                  return res.status(404).json({ error: 'Player not found' });
+              }
+          });
+      });
+  } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
