@@ -4,7 +4,9 @@ const isPlayer = require('../models/playerSchema')
 const playerDb = require('../dbConfig.js').playersDb
 
 
+
 exports.createPlayer = (req, res, next) => {
+
   const player = {
     id: uuidv4(),
     name: req.body.name,
@@ -37,6 +39,7 @@ exports.createPlayer = (req, res, next) => {
 }
 
 exports.addRun = (req, res, next) => {
+
   try {
       playerDb.serialize(() => {
           const run = {
@@ -78,5 +81,49 @@ exports.addRun = (req, res, next) => {
   } catch (err) {
       console.log(err);
       return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+exports.getLeaderboards = (req, res, next) => {
+
+  try {
+    playerDb.serialize(() => {
+      const level = req.params.level;
+
+      const query = `
+        SELECT DISTINCT players.id, players.name, json_extract(value, '$.totalSeconds') AS totalSeconds
+        FROM players
+        JOIN json_each(players.runs) ON 1
+        WHERE json_array_length(players.runs) > 0 AND json_extract(value, '$.level') = ?
+        ORDER BY totalSeconds ASC
+        LIMIT 15;
+      
+      
+      `;
+
+      playerDb.all(query, [level], (err, rows) => {
+        if (err) {
+          console.error(err.message);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+      
+        if (rows.length > 0) {
+          const leaderboards = rows.map((row) => ({
+            name: row.name,
+            totalSeconds: row.totalSeconds,
+          }));
+        
+          return res.status(200).json(leaderboards);
+        } else {
+          console.log('No matching rows found.');
+          return res.status(404).json({ error: 'No players found for the specified level' });
+        }
+      });
+    })
+      
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };

@@ -9,9 +9,9 @@ router.post('/player', gameController.createPlayer)
 
 router.put('/player/:id', gameController.addRun)
 
-//router.get('/player', gameController.getLeaderboards)
+router.get('/level/:level', gameController.getLeaderboards)
 
-//router.get('/level/:name', gameController.getWinningCoords)
+//router.get('/level/:levelName', gameController.getWinningCoords)
 
 
 
