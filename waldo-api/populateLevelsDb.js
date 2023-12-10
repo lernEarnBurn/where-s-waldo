@@ -1,5 +1,11 @@
-const levelsDb = require('./dbConfig.js').levelsDb
+const sqlite3 = require('sqlite3').verbose();
 
+const levelsDb = new sqlite3.Database('./db/levels.sqlite', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+  console.log('Connected to the database.');
+});
 
 levelsDb.serialize(() => {
   
@@ -16,11 +22,11 @@ levelsDb.serialize(() => {
   levelsDb.run(`
     INSERT INTO levels (name, x_start, x_end, y_start, y_end)
     VALUES
-      ('Level 1', 1, 10, 20, 30),
-      ('Level 2', 11, 20, 30, 40),
-      ('Level 3', 190, 260, 519, 590),  
-      ('Level 4', 260, 590, 519, 590),  
-      ('Level 5', 190, 260, 519, 590)  
+      ('Level1', 1, 10, 20, 30),
+      ('Level2', 11, 20, 30, 40),
+      ('Level3', 190, 260, 519, 590),  
+      ('Level4', 260, 590, 519, 590),  
+      ('Level5', 190, 260, 519, 590)  
   `);
 
   levelsDb.each('SELECT * FROM levels', (err, row) => {
