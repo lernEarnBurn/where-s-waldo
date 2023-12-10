@@ -11,7 +11,7 @@ router.put('/player/:id', gameController.addRun)
 
 router.get('/level/:level', gameController.getLeaderboards)
 
-//router.get('/level/:levelName', gameController.getWinningCoords)
+router.post('/level', gameController.getWinningCoords)
 
 
 

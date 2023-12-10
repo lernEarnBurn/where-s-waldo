@@ -150,3 +150,39 @@ exports.getLeaderboards = (req, res, next) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.getWinningCoords = (req, res, next) => {
+  const levelsDb = new sqlite3.Database('./db/levels.sqlite', (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log('Connected to the database.');
+  });
+  try {
+    levelsDb.serialize(() => {
+      
+        const selectQuery = `SELECT x_start, x_end, y_start, y_end
+                             FROM levels
+                             WHERE name = ?;`;
+      
+        levelsDb.get(selectQuery, [req.body.level], (err, row) => {
+            if (err) {
+                console.error(err.message);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+          
+            if (row) {
+                return res.status(200).json(row);
+            
+            } else {
+                console.log('No matching row found.');
+                playerDb.close();
+                return res.status(404).json({ error: 'Level not found' });
+            }
+        });
+    });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
