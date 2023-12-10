@@ -1,11 +1,19 @@
 const { v4: uuidv4 } = require('uuid');
 
 const isPlayer = require('../models/playerSchema')
-const playerDb = require('../dbConfig.js').playersDb
+const sqlite3 = require('sqlite3').verbose();
+
 
 
 
 exports.createPlayer = (req, res, next) => {
+  const playerDb = new sqlite3.Database('./db/players.sqlite', (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log('Connected to the database.');
+  });
+  
 
   const player = {
     id: uuidv4(),
@@ -39,6 +47,13 @@ exports.createPlayer = (req, res, next) => {
 }
 
 exports.addRun = (req, res, next) => {
+  const playerDb = new sqlite3.Database('./db/players.sqlite', (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log('Connected to the database.');
+  });
+  
 
   try {
       playerDb.serialize(() => {
@@ -86,9 +101,17 @@ exports.addRun = (req, res, next) => {
 
 
 exports.getLeaderboards = (req, res, next) => {
+  const playerDb = new sqlite3.Database('./db/players.sqlite', (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log('Connected to the database.');
+  });
+  
 
   try {
     playerDb.serialize(() => {
+      
       const level = req.params.level;
 
       const query = `
