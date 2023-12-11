@@ -1,11 +1,14 @@
 import './App.css'
+import { Routes, Route } from 'react-router-dom'
+
+import { StartMenu } from './components/StartMenu'
 
 function App() {
 
   return (
-    <>
-      <h1>Where&apos;s Waldo</h1>
-    </>
+    <Routes>
+      <Route path='/' element={<StartMenu/>}/>
+    </Routes>
   )
 }
 
