@@ -13,8 +13,26 @@ body {
   background-image: url('/images/waldoBackground.jpg');
 }
 
+.bg-color {
+  background-color: #EAF2E3;
+}
+
 .game-button {
   background-color: #4cd6cf;
   color: #EAF2E3;
 }
+
+.level-cube {
+  border-radius: 1vh;
+  transition: transform .3s ease-in-out;
+  display: grid;
+  place-items: center;
+  font-size: 5.5vw;
+  color: #EAF2E3;
+}
+
+.level-cube:hover {
+  transform: scale(1.03)
+}
+
 
