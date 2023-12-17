@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { LockKeyhole } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'
 
 export function MainMenu(){
-
+  const navigate = useNavigate()
 
   return (
     <motion.section 
@@ -11,9 +12,9 @@ export function MainMenu(){
     > 
       <div className='flex flex-col gap-8'>
         <div className='row flex gap-10'>
-          <div className='bg-red-400 w-36 h-36 level-cube'>1</div>
-          <div className='bg-red-400 w-36 h-36 level-cube'>2</div>
-          <div className='bg-red-400 w-36 h-36 level-cube'>3</div>
+          <div className='bg-red-400 w-36 h-36 level-cube' onClick={() => {navigate('/level-one')}}>1</div>
+          <div className='bg-red-400 w-36 h-36 level-cube' onClick={() => {navigate('/level-two')}}>2</div>
+          <div className='bg-red-400 w-36 h-36 level-cube' onClick={() => {navigate('/level-three')}}>3</div>
           <motion.div  
             className='bg-red-400 w-36 h-36 level-cube'>
               <motion.div
