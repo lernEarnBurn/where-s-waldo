@@ -6,7 +6,7 @@ import { AnimatePresence } from 'framer-motion'
 import { StartMenu } from './components/StartMenu'
 import { MainMenu } from './components/MainMenu'
 import { LevelOne } from './components/levels/LevelOne'
-import { LevelTwo } from './components/levels/LevleTwo'
+import { LevelTwo } from './components/levels/LevelTwo'
 import { LevelThree } from './components/levels/LevelThree'
 
 function App() {

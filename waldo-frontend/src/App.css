@@ -37,4 +37,26 @@ body {
   transform: scale(1.03)
 }
 
+.level {
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 99vw;
+}
 
+.one {
+  height: 280vh;
+  background-size: cover;
+  background-image: url('/images/waldoLevel.jpg');
+}
+
+.two {
+  height: 148vh;
+  background-image: url('/images/waldoLevel2.jpg');
+}
+
+.three {
+  background-size: cover;
+  height: 100vh;
+  background-image: url('/images/waldoLevel3.jpg')
+}
+  
