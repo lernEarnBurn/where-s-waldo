@@ -22,11 +22,9 @@ levelsDb.serialize(() => {
   levelsDb.run(`
     INSERT INTO levels (name, x_start, x_end, y_start, y_end)
     VALUES
-      ('Level1', 1, 10, 20, 30),
-      ('Level2', 11, 20, 30, 40),
-      ('Level3', 190, 260, 519, 590),  
-      ('Level4', 260, 590, 519, 590),  
-      ('Level5', 190, 260, 519, 590)  
+      ('Level1', 185, 430, 365, 495),
+      ('Level2', 1240, 1270, 330, 380),
+      ('Level3', 1410, 1435, 75, 125),  
   `);
 
   levelsDb.each('SELECT * FROM levels', (err, row) => {
