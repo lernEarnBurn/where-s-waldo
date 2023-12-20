@@ -60,3 +60,10 @@ body {
   background-image: url('/images/waldoLevel3.jpg')
 }
   
+.waldo-icon {
+  background-image: url('/images/waldoIcon.png');
+  background-size: contain;
+  background-repeat:no-repeat;
+  height: 12vh;
+  width:15vw;
+}
