@@ -8,6 +8,7 @@ import { MainMenu } from './components/MainMenu'
 import { LevelOne } from './components/levels/LevelOne'
 import { LevelTwo } from './components/levels/LevelTwo'
 import { LevelThree } from './components/levels/LevelThree'
+import { Leaderboard } from './components/Leaderboard'
 
 function App() {
   const location = useLocation()
@@ -20,6 +21,7 @@ function App() {
         <Route path='/level-one' element={<LevelOne/>}/>
         <Route path='/level-two' element={<LevelTwo/>}/>
         <Route path='/level-three' element={<LevelThree/>}/>
+        <Route path='/:level/leaderboard' element={<Leaderboard/>}/>
 
 
       </Routes>
