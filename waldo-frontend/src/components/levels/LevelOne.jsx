@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { useGetWinningCoords } from './useGetWinningCoords'
 import { Timer } from '../Timer'
@@ -7,6 +8,7 @@ import { Timer } from '../Timer'
 export function LevelOne(){
   const [gameOver, setGameOver] = useState(false)
   const [seconds, setSeconds] = useState(0)
+  const [openModal, setOpenModal] = useState(false)
 
   const {xStart, xEnd, yStart, yEnd} = useGetWinningCoords('Level1')
 
@@ -17,12 +19,20 @@ export function LevelOne(){
 
     if(x >= xStart && x <= xEnd && y >= yStart && y <=yEnd){
       setGameOver(true)
+      setOpenModal(true)
       console.log('win')
     }else{
       //display animation on miss
     }
   }
 
+  const navigate = useNavigate()
+
+  async function transitionToLeaderboards(){
+    //createPlayer()
+    //addRun()
+    navigate('/level-one/leaderboards')
+  }
   
 
   return (
@@ -32,6 +42,10 @@ export function LevelOne(){
         <Timer gameOver={gameOver} setParentSeconds={setSeconds}/>
       </div>
       <div onClick={checkIfWin} className='level one'></div>
+      <dialog open={openModal} onClose={() => {console.log('closed')}}>
+        <input placeholder='Name'/>
+        <button onClick={transitionToLeaderboards}>Submit</button>
+      </dialog>
     </motion.section>
   )
 }
