@@ -4,47 +4,47 @@ const isPlayer = require('../models/playerSchema')
 const sqlite3 = require('sqlite3').verbose();
 
 
-
-
 exports.createPlayer = (req, res, next) => {
   const playerDb = new sqlite3.Database('./db/players.sqlite', (err) => {
     if (err) {
       console.error(err.message);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
     console.log('Connected to the database.');
   });
-  
+
+  const playerId = uuidv4();
 
   const player = {
-    id: uuidv4(),
+    id: playerId,
     name: req.body.name,
-    runs: [] 
+    runs: [],
   };
-  
-  if(isPlayer(player)){
+
+  if (isPlayer(player)) {
     try {
       playerDb.serialize(() => {
         const insertPlayer = playerDb.prepare('INSERT INTO players (id, name, runs) VALUES (?, ?, ?)');
-        insertPlayer.run(player.name, JSON.stringify(player.runs));
-        insertPlayer.finalize()
-      })
-      
+        insertPlayer.run(player.id, player.name, JSON.stringify(player.runs));
+        insertPlayer.finalize();
+      });
+
       playerDb.close((err) => {
         if (err) {
           console.error(err.message);
           return res.status(500).json({ error: 'Internal Server Error' });
         }
       });
-    } catch(err){
+    } catch (err) {
       console.error(err.message);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-    res.json(`created player: ${JSON.stringify(player)}`)
+    res.json(`created player: ${JSON.stringify(player)}`);
+  } else {
+    res.json('not a player');
+  }
+};
 
-  }else{
-    res.json('not a player')
-  }  
-}
 
 exports.addRun = (req, res, next) => {
   const playerDb = new sqlite3.Database('./db/players.sqlite', (err) => {
@@ -64,6 +64,7 @@ exports.addRun = (req, res, next) => {
 
           const selectQuery = `SELECT runs FROM players WHERE id = ?`;
           const updateQuery = `UPDATE players SET runs = ? WHERE id = ?`;
+          console.log(req.params.id)
 
           playerDb.get(selectQuery, [req.params.id], (err, row) => {
               if (err) {
