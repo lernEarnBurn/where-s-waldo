@@ -3,12 +3,15 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useGetWinningCoords } from './useGetWinningCoords'
+import { createPlayerInstance } from './createPlayerInstance'
 import { Timer } from '../Timer'
 
 export function LevelOne(){
   const [gameOver, setGameOver] = useState(false)
   const [seconds, setSeconds] = useState(0)
   const [openModal, setOpenModal] = useState(false)
+
+  const [playerName, setPlayerName] = useState('')
 
   const {xStart, xEnd, yStart, yEnd} = useGetWinningCoords('Level1')
 
@@ -29,11 +32,13 @@ export function LevelOne(){
   const navigate = useNavigate()
 
   async function transitionToLeaderboards(){
-    //createPlayer()
-    //addRun()
-    navigate('/level-one/leaderboards')
+    await createPlayerInstance(playerName, 'Level1')
+    navigate('/level-one/leaderboard')
   }
   
+  const handleNameChange = (event) => {
+    setPlayerName(event.target.value);
+  };
 
   return (
     <motion.section className="  overflow-x-hidden overflow-y-auto max-h-[280vh] grid place-items-center h-[100vh]" initial={{ y: -1000 }} animate={{ y: 0 }} exit={{ y: -1000 }} transition={{ duration: 0.3 }}>
@@ -42,8 +47,8 @@ export function LevelOne(){
         <Timer gameOver={gameOver} setParentSeconds={setSeconds}/>
       </div>
       <div onClick={checkIfWin} className='level one'></div>
-      <dialog open={openModal} onClose={() => {console.log('closed')}}>
-        <input placeholder='Name'/>
+      <dialog open={openModal}>
+        <input onChange={handleNameChange} placeholder='Name'/>
         <button onClick={transitionToLeaderboards}>Submit</button>
       </dialog>
     </motion.section>
