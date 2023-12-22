@@ -32,7 +32,7 @@ export function LevelOne(){
   const navigate = useNavigate()
 
   async function transitionToLeaderboards(){
-    await createPlayerInstance(playerName, 'Level1')
+    await createPlayerInstance(playerName, 'Level1', seconds)
     navigate('/level-one/leaderboard')
   }
   
@@ -40,11 +40,15 @@ export function LevelOne(){
     setPlayerName(event.target.value);
   };
 
+  function getSeconds(seconds){
+    setSeconds(seconds)
+  }
+
   return (
     <motion.section className="  overflow-x-hidden overflow-y-auto max-h-[280vh] grid place-items-center h-[100vh]" initial={{ y: -1000 }} animate={{ y: 0 }} exit={{ y: -1000 }} transition={{ duration: 0.3 }}>
       <div className='h-[12vh] w-[100vw] bg-transparent flex justify-evenly items-center'>
         <div className='waldo-icon'></div>
-        <Timer gameOver={gameOver} setParentSeconds={setSeconds}/>
+        <Timer gameOver={gameOver} setParentSeconds={getSeconds}/>
       </div>
       <div onClick={checkIfWin} className='level one'></div>
       <dialog open={openModal}>
