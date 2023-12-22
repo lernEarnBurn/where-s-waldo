@@ -1,12 +1,17 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { useGetWinningCoords } from './useGetWinningCoords'
+import { createPlayerInstance } from './createPlayerInstance'
 import { Timer } from '../Timer'
 
 export function LevelTwo(){
   const [gameOver, setGameOver] = useState(false)
   const [seconds, setSeconds] = useState(0)
+  const [openModal, setOpenModal] = useState(false)
+
+  const [playerName, setPlayerName] = useState('')
 
   const {xStart, xEnd, yStart, yEnd} = useGetWinningCoords('Level2')
 
@@ -17,19 +22,39 @@ export function LevelTwo(){
 
     if(x >= xStart && x <= xEnd && y >= yStart && y <=yEnd){
       setGameOver(true)
+      setOpenModal(true)
       console.log('win')
     }else{
       //display animation on miss
     }
   }
 
+  const navigate = useNavigate()
+
+  async function transitionToLeaderboards(){
+    await createPlayerInstance(playerName, 'Level2', seconds)
+    navigate('/level-two/leaderboard')
+  }
+  
+  const handleNameChange = (event) => {
+    setPlayerName(event.target.value);
+  };
+
+  function getSeconds(seconds){
+    setSeconds(seconds)
+  }
+
   return (
       <motion.section className="overflow-y-auto overflow-x-hidden max-h-[150vh] grid place-items-center h-[100vh]" initial={{ y: -1000 }} animate={{ y: 0 }} exit={{ y: -1000 }} transition={{ duration: 0.3 }}>
         <div className='h-[12vh] w-[100vw] bg-transparent flex justify-evenly items-center'>
           <div className='waldo-icon'></div>
-          <Timer gameOver={gameOver} setParentSeconds={setSeconds}/>
+          <Timer gameOver={gameOver} setParentSeconds={getSeconds}/>
         </div>
         <div onClick={checkIfWin} className='level two'></div>
+        <dialog open={openModal}>
+          <input onChange={handleNameChange} placeholder='Name'/>
+          <button onClick={transitionToLeaderboards}>Submit</button>
+      </dialog>
       </motion.section>
   )
 }
