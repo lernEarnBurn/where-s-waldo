@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -15,6 +15,9 @@ export function LevelThree(){
 
   const {xStart, xEnd, yStart, yEnd} = useGetWinningCoords('Level3')
 
+  const [missElements, setMissElements] = useState([]);
+
+
   function checkIfWin(event){
     const x = event.clientX;
     const y = event.clientY;
@@ -25,7 +28,17 @@ export function LevelThree(){
       setOpenModal(true)
       console.log('win')
     }else{
-      //display animation on miss
+      const missElementKey = Date.now();
+      setMissElements((prevMissElements) => [
+        ...prevMissElements,
+        { key: missElementKey, x, y },
+      ]);
+
+      setTimeout(() => {
+        setMissElements((prevMissElements) =>
+          prevMissElements.filter((el) => el.key !== missElementKey)
+        );
+      }, 700);
     }
   }
 
@@ -50,7 +63,23 @@ export function LevelThree(){
         <div className='waldo-icon'></div>
         <Timer gameOver={gameOver} setParentSeconds={getSeconds}/>
       </div>
-      <div onClick={checkIfWin} className='level three'></div>
+      <div onClick={checkIfWin} className='level three'>
+        <AnimatePresence>
+            {missElements.map(({ key, x, y }) => (
+              <motion.div
+                 key={key}
+                 className='text-red-600 text-6xl h-10 w-10 absolute pointer-events-none font-mono' 
+                 style={{ left: `${x - 20}px`, top: `${y - 20}px` }}
+                 initial={{ opacity: 0, rotate: 0 }}
+                 animate={{ opacity: 1, rotate: 360 }}
+                 exit={{ opacity: 0, rotate: 360 }}
+                 transition={{ duration: .4 }}
+                 >
+                  X
+              </motion.div>
+            ))}
+        </AnimatePresence>
+      </div>
       <dialog open={openModal}>
           <input onChange={handleNameChange} placeholder='Name'/>
           <button onClick={transitionToLeaderboards}>Submit</button>
