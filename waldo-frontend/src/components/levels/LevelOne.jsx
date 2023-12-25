@@ -26,7 +26,7 @@ export function LevelOne(){
     
 
 
-    if(x >= xStart && x <= xEnd && y >= yStart && y <=yEnd){
+    if(x >= xStart && x <= xEnd && y >= yStart && y <= yEnd){
       setGameOver(true)
       setOpenModal(true)
       console.log('win')
@@ -48,9 +48,17 @@ export function LevelOne(){
   const navigate = useNavigate()
 
   async function transitionToLeaderboards(){
-    await createPlayerInstance(playerName, 'Level1', seconds)
-    navigate('/level-one/leaderboard')
+    if(playerName != ''){
+      setOpenModal(false)
+      createPlayerInstance(playerName, 'Level1', seconds)
+      navigate('/level-one/leaderboard')      
+    }
   }
+
+  const buttonVariants = {
+    rest: { scale: 1 },
+    hover: { scale: 1.05 },
+  };
   
   const handleNameChange = (event) => {
     setPlayerName(event.target.value);
@@ -59,6 +67,8 @@ export function LevelOne(){
   function getSeconds(seconds){
     setSeconds(seconds)
   }
+
+  
 
   return (
     <motion.section className="  overflow-x-hidden overflow-y-auto max-h-[280vh] grid place-items-center h-[100vh]" initial={{ y: -1000 }} animate={{ y: 0 }} exit={{ y: -1000 }} transition={{ duration: 0.3 }}>
@@ -84,9 +94,14 @@ export function LevelOne(){
         </AnimatePresence>
       </div>
       
-      <dialog open={openModal}>
-        <input onChange={handleNameChange} placeholder='Name'/>
-        <button onClick={transitionToLeaderboards}>Submit</button>
+      <dialog open={openModal} className='h-36 w-72 rounded-lg bg-color items-center justify-center gap-3'>
+        <input onChange={handleNameChange} className='ml-8 mt-6 mb-4 py-2 px-2 w-56 rounded-sm h-8 text-xl' placeholder='Name'/>
+        <motion.button variants={buttonVariants}
+         whileHover="hover"
+         whileTap="rest" 
+         initial="rest" 
+         onClick={transitionToLeaderboards} 
+         className='ml-8 game-button w-56 h-12 text-lg rounded-lg'>Submit</motion.button>
       </dialog>
       
     </motion.section>

@@ -45,9 +45,17 @@ export function LevelThree(){
   const navigate = useNavigate()
 
   async function transitionToLeaderboards(){
-    await createPlayerInstance(playerName, 'Level3', seconds)
-    navigate('/level-three/leaderboard')
+    if(playerName != ''){
+      setOpenModal(false)
+      createPlayerInstance(playerName, 'Level3', seconds)
+      navigate('/level-three/leaderboard')      
+    }
   }
+
+  const buttonVariants = {
+    rest: { scale: 1 },
+    hover: { scale: 1.05 },
+  };
   
   const handleNameChange = (event) => {
     setPlayerName(event.target.value);
@@ -80,9 +88,14 @@ export function LevelThree(){
             ))}
         </AnimatePresence>
       </div>
-      <dialog open={openModal}>
-          <input onChange={handleNameChange} placeholder='Name'/>
-          <button onClick={transitionToLeaderboards}>Submit</button>
+      <dialog open={openModal} className='h-36 w-72 rounded-lg bg-color items-center justify-center gap-3'>
+        <input onChange={handleNameChange} className='ml-8 mt-6 mb-4 py-2 px-2 w-56 rounded-sm h-8 text-xl' placeholder='Name'/>
+        <motion.button variants={buttonVariants}
+         whileHover="hover"
+         whileTap="rest" 
+         initial="rest" 
+         onClick={transitionToLeaderboards} 
+         className='ml-8 game-button w-56 h-12 text-lg rounded-lg'>Submit</motion.button>
       </dialog>
     </motion.section>
   )
