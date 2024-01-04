@@ -3,25 +3,36 @@ import { useEffect, useState } from 'react'
 
 export function Leaderboard(){
 
-  const { leaderboard } = useGetLeaderboards('Level1')
+  const { leaderboard, loading } = useGetLeaderboards('Level1')
+  
 
   return (
     <>
-    {leaderboard.map((item, index) => {
-      return <p key={index}>{item.name}</p>
-    })}
+   <>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        leaderboard.map((item, index) => (
+          <p className='text-red-500' key={index}>{item.name}</p>
+        ))
+      )}
+    </>
     </>
   )
 }
 
 function useGetLeaderboards(level){
-  const [Leaderboard, setLeaderBoard] = useState([])
+  const [leaderboard, setLeaderBoard] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    
+
     const getLeaderboard = async() => {
       try {
         const response = await axios.get(`http://localhost:3000/level/${level}`)
         setLeaderBoard(response.data)
+        setLoading(false)
         console.log(response.data)
       } catch (err){
         console.log(err)
@@ -29,7 +40,7 @@ function useGetLeaderboards(level){
     }
 
     getLeaderboard()
-  }, [])
+  }, [level])
 
-  return { Leaderboard }
+  return { leaderboard, loading }
 }

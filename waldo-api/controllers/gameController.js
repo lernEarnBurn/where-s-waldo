@@ -112,40 +112,58 @@ exports.getLeaderboards = (req, res, next) => {
 
   try {
     playerDb.serialize(() => {
-      
       const level = req.params.level;
-
+    
       const query = `
-        SELECT DISTINCT players.id, players.name, json_extract(value, '$.totalSeconds') AS totalSeconds
+        SELECT DISTINCT players.id, players.name, CAST(json_extract(value, '$.totalSeconds') AS INTEGER) AS totalSeconds
         FROM players
         JOIN json_each(players.runs) ON 1
         WHERE json_array_length(players.runs) > 0 AND json_extract(value, '$.level') = ?
         ORDER BY totalSeconds ASC
         LIMIT 15;
-      
-      
       `;
-
+    
       playerDb.all(query, [level], (err, rows) => {
         if (err) {
           console.error(err.message);
           return res.status(500).json({ error: 'Internal Server Error' });
         }
-      
+    
         if (rows.length > 0) {
           const leaderboards = rows.map((row) => ({
             name: row.name,
             totalSeconds: row.totalSeconds,
           }));
-        
+    
           return res.status(200).json(leaderboards);
         } else {
           console.log('No matching rows found.');
-          return res.status(404).json({ error: 'No players found for the specified level' });
+    
+          // If no matching rows are found, adjust the query to get all rows
+          const allRowsQuery = `
+            SELECT DISTINCT players.id, players.name, CAST(json_extract(value, '$.totalSeconds') AS INTEGER) AS totalSeconds
+            FROM players
+            JOIN json_each(players.runs) ON 1
+            WHERE json_array_length(players.runs) > 0 AND json_extract(value, '$.level') = ?
+            ORDER BY totalSeconds ASC;
+          `;
+    
+          playerDb.all(allRowsQuery, [level], (allRowsErr, allRows) => {
+            if (allRowsErr) {
+              console.error(allRowsErr.message);
+              return res.status(500).json({ error: 'Internal Server Error' });
+            }
+    
+            const leaderboards = allRows.map((row) => ({
+              name: row.name,
+              totalSeconds: row.totalSeconds,
+            }));
+    
+            return res.status(200).json(leaderboards);
+          });
         }
       });
-    })
-      
+    });
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ error: 'Internal Server Error' });
