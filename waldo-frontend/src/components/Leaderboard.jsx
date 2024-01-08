@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 export function Leaderboard(){
 
-  const { leaderboard, loading } = useGetLeaderboards('Level1')
+  const { leaderboard, loading } = useGetLeaderboards()
   
 
   return (
@@ -21,16 +21,17 @@ export function Leaderboard(){
   )
 }
 
-function useGetLeaderboards(level){
+function useGetLeaderboards(){
   const [leaderboard, setLeaderBoard] = useState([])
   const [loading, setLoading] = useState(true)
+  const level = useState(localStorage.getItem('level'))
 
   useEffect(() => {
     
 
     const getLeaderboard = async() => {
       try {
-        const response = await axios.get(`http://localhost:3000/level/${level}`)
+        const response = await axios.get(`http://localhost:3000/level/${level[0]}`)
         setLeaderBoard(response.data)
         setLoading(false)
         console.log(response.data)
@@ -40,7 +41,7 @@ function useGetLeaderboards(level){
     }
 
     getLeaderboard()
-  }, [level])
+  }, [])
 
   return { leaderboard, loading }
 }

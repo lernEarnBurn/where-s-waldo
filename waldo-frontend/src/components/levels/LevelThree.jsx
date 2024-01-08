@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useGetWinningCoords } from './useGetWinningCoords'
@@ -64,6 +64,10 @@ export function LevelThree(){
   function getSeconds(seconds){
     setSeconds(seconds)
   }
+
+  useEffect(() => {
+    localStorage.setItem('level', 'Level3')
+  }, [])
 
   return (
     <motion.section className="overflow-y-auto overflow-x-hidden max-h-[280vh] grid place-items-center h-[100vh]" initial={{ y: -1000 }} animate={{ y: 0 }} exit={{ y: -1000 }} transition={{ duration: 0.3 }}>
