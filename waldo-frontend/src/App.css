@@ -18,6 +18,11 @@ body {
   background-color: #EAF2E3;
 }
 
+.header-clr {
+  font-weight: 600;
+  color: #4cd6cf;
+}
+
 .game-button {
   background-color: #4cd6cf;
   color: #EAF2E3;
