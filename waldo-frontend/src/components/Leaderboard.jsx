@@ -1,7 +1,18 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { ArrowBigLeft } from 'lucide-react';
+import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 export function Leaderboard(){
+
+  const navigate = useNavigate()
+
+  const buttonVariants = {
+    rest: { scale: 1 },
+    hover: { scale: 1.1 },
+  };
+
 
   const { leaderboard, loading } = useGetLeaderboards()
   
@@ -24,6 +35,16 @@ export function Leaderboard(){
           ))
         )}
       </div>
+      <motion.button
+       className='rounded-lg game-button back-pos w-16 h-13 grid place-items-center'
+       variants={buttonVariants}
+       whileHover="hover"
+       whileTap="rest" 
+       initial="rest"
+       onClick={() => {navigate('/main-menu')}}
+       >
+        <ArrowBigLeft height={45} width={60}/>
+      </motion.button>
     </section>
   )
 }

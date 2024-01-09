@@ -28,6 +28,12 @@ body {
   color: #EAF2E3;
 }
 
+.back-pos {
+  position: absolute;
+  top:7.5vh;
+  left: 15vw;
+}
+
 .level-cube {
   border-radius: 1vh;
   transition: transform .3s ease-in-out;
