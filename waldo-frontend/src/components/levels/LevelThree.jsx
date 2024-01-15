@@ -2,8 +2,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useGetWinningCoords } from './useGetWinningCoords'
-import { createPlayerInstance } from './createPlayerInstance'
+import { storePlayerLocally } from './storePlayerLocally'
+
 import { Timer } from '../Timer'
 
 export function LevelThree(){
@@ -13,7 +13,6 @@ export function LevelThree(){
 
   const [playerName, setPlayerName] = useState('')
 
-  const {xStart, xEnd, yStart, yEnd} = useGetWinningCoords('Level3')
 
   const [missElements, setMissElements] = useState([]);
 
@@ -23,7 +22,7 @@ export function LevelThree(){
     const y = event.clientY;
     console.log( `${x} ${y}`)
 
-    if(x >= xStart && x <= xEnd && y >= yStart && y <=yEnd){
+    if(x >= 1410 && x <= 1435 && y >= 105 && y <= 150){
       setGameOver(true)
       setOpenModal(true)
       console.log('win')
@@ -47,7 +46,7 @@ export function LevelThree(){
   async function transitionToLeaderboards(){
     if(playerName != ''){
       setOpenModal(false)
-      createPlayerInstance(playerName, 'Level3', seconds)
+      storePlayerLocally(playerName, seconds)
       navigate('/level-three/leaderboard')      
     }
   }

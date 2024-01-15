@@ -2,8 +2,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useGetWinningCoords } from './useGetWinningCoords'
-import { createPlayerInstance } from './createPlayerInstance'
+import { storePlayerLocally } from './storePlayerLocally'
+
 import { Timer } from '../Timer'
 
 export function LevelOne(){
@@ -13,7 +13,6 @@ export function LevelOne(){
 
   const [playerName, setPlayerName] = useState('')
 
-  const {xStart, xEnd, yStart, yEnd} = useGetWinningCoords('Level1')
 
   const [missElements, setMissElements] = useState([]);
 
@@ -25,8 +24,7 @@ export function LevelOne(){
 
     
 
-
-    if(x >= xStart && x <= xEnd && y >= yStart && y <= yEnd){
+    if(x >= 185 && x <= 410 && y >= 365 && y <= 580){
       setGameOver(true)
       setOpenModal(true)
       console.log('win')
@@ -50,7 +48,7 @@ export function LevelOne(){
   async function transitionToLeaderboards(){
     if(playerName != ''){
       setOpenModal(false)
-      createPlayerInstance(playerName, 'Level1', seconds)
+      storePlayerLocally(playerName, seconds)
       navigate('/level-one/leaderboard')      
     }
   }
